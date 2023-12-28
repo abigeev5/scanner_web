@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="modal fade" id="viewer-modal" tabindex="-1" aria-labelledby="modal-title" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="text_wrapper" id="modal-title">Modal title</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>        
+            <div class="modal-body">
+                <div class="container">
+                    <div class="row mx-auto">
+                        <div class="col-md-8">
+                            <canvas id="modal-canvas" style="width: 100%;" width="800" height="600"></canvas>
+                        </div>
+                        <div class="col-6 col-md-4 flex-grow-1">
+                            <div class="row">
+                                <h4 class="mb-0" id="modal-barcode">bar</h4>
+                            </div>
+                            <div class="row mb-1 ">
+                                <div class="col-sm-5">
+                                    <p class="text_wrapper" id="modal-date" style="color: {{accent_gray}}">Дата: </p>
+                                    <p class="text_wrapper" id="modal-scanner" style="color: {{accent_gray}}">Сканер: </p>
+                                    <p class="text_wrapper" id="modal-user" style="color: {{accent_gray}}">Пользователь: </p>
+                                    <button type="button" class="btn btn-primary" id="modal-show" data-toggle="button" aria-pressed="false" autocomplete="off">
+                                        Отобразить
+                                      </button>
+                                </div>
+                                <div class="col-sm-6">
+                                    <p class="text_wrapper" id="modal-date-field"></p>
+                                    <p class="text_wrapper" id="modal-scanner-field"></p>
+                                    <p class="text_wrapper" id="modal-user-field"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>                
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" id="modal-send">Отправить</button>
+                <a id='delete-img'><button class="btn btn-primary" id="modal-delete">Удалить</button></a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col border border-2 min-vh-100 max-vh-100 d-flex flex-column">
+    <div class="row flex-grow-1">
+        <div class="row min-vh-100">
+            <div class="col-sm-4 border-end">
+                <ul class="tree" style="padding: 10px;" role="tablist" aria-orientation="vertical">
+                    {% for role, user_list in users.items() %}
+                        <li>
+                            <details open>
+                                <summary class="text_wrapper" style="font-size: 17px;">{{role}}</summary>
+                                <ul>
+                                    {% for cur_user in user_list %}
+                                    <li iclass="li-nav" data-value="{{cur_user["id"]}}"  id="user-{{cur_user["id"]}}-tab" data-bs-toggle="pill" data-bs-target="#user-{{cur_user["id"]}}" type="button" role="tab" aria-controls="user-{{cur_user["username"]}}" aria-selected="true">
+                                        <a class="text_wrapper" style="width: 100%; font-size: 16px;">{{cur_user["username"]}}</a>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </details>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <ul role="tablist" aria-orientation="vertical" style="padding: 15px;">
+                    <li class="li-nav" data-value="newuser"  id="user-newuser-tab" data-bs-toggle="pill" data-bs-target="#user-newuser" type="button" role="tab" aria-controls="user-newuser" aria-selected="true">
+                        <a class="btn btn-link text_wrapper">
+                            <i class="fa-solid fa-plus" style="margin-right: 10px;"></i>Добавить пользователя
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-sm-8 tab-content" style="padding: 10px; max-height: 1000px;" id="users-tabContent-2">
+                {% for user_list in users.values() %}
+                    {% if loop.index == 1 %} 
+                        {% set user_list = user_list + [{"newuser": True, "id": "newuser", "id": "newuser"}] %} 
+                    {% endif %}
+                    {% for cur_user in user_list %}
+                        <div class="tab-pane fade show" id="user-{{cur_user["id"]}}" role="tabpanel" aria-labelledby="user-{{cur_user["id"]}}-tab">
+                            <div class="card-body media align-items-center">
+                                <div class="form-group">
+                                    <label class="form-label text_wrapper">Логин</label>
+                                    <input type="text" class="form-control mb-1 text_wrapper" value="{{cur_user["username"]}}" id="user-{{cur_user["id"]}}-login" {% if not("newuser" in cur_user) %} disabled readonly {% endif %}>
+                                </div>
+                                {% if "newuser" in cur_user %}
+                                    <div class="form-group">
+                                        <label class="form-label text_wrapper">Пароль</label>
+                                        <input type="text" class="form-control mb-1 text_wrapper" value="{{cur_user["username"]}}" id="user-{{cur_user["id"]}}-password">
+                                    </div>
+                                {% endif %}
+                                <div class="form-group">
+                                    <label class="form-label text_wrapper">ФИО</label>
+                                    <input type="text" class="form-control mb-1 text_wrapper" value="{{cur_user["name"]}}" id="user-{{cur_user["id"]}}-name">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label text_wrapper">Должность</label>
+                                    <input type="text" class="form-control text_wrapper" value="{{cur_user["info"]}}" id="user-{{cur_user["id"]}}-job">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label text_wrapper">Роль</label>
+                                    <select class="form-select text_wrapper" id="user-{{cur_user["id"]}}-role">
+                                        <option {% if cur_user["role"] == 1 %} selected {% endif %}>Оператор</option>
+                                        <option {% if cur_user["role"] == 2 %} selected {% endif %}>Администратор</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label text_wrapper">Отдел</label>
+                                    <input type="text" class="form-control text_wrapper" value="БМТ-1" id="user-{{cur_user["id"]}}-department">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label text_wrapper">Список доступных сканеров</label>
+                                    <div class="form-control" id="user-{{cur_user["id"]}}-scanners">
+                                        {% for scanner in scanners %}
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" value="" id="check-scanner-{{scanner["id"]}}" {% if scanner["id"] in cur_user["scanners"]%} checked {% endif %}>
+                                                <label class="form-check-label" for="check-scanner-{{scanner["id"]}}">
+                                                    {{scanner["name"]}}
+                                                </label>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-end mt-3">
+                                <button type="button" class="btn btn-primary text_wrapper" id="save-user-{{cur_user["id"]}}">Сохранить</button>
+                                <button type="button" class="btn btn-default text_wrapper" id="cancel-user-{{cur_user["id"]}}">Отменить</button>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

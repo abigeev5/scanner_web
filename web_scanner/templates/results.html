@@ -1,0 +1,217 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<script type="text/javascript">
+    $(function() {
+      $('a#delete-img').on('click', function(e) {
+        e.preventDefault();
+        const barcode = document.querySelector("#modal-barcode").textContent;
+        const filename = document.querySelector("#modal-title").textContent;
+        $.getJSON('/delete_img', {'barcode': barcode, 'filename': filename}, 
+        function(data) {
+            $('#viewer-modal').modal('hide');
+            setInterval('location.reload()', 1000);
+        });
+        return false;
+      });
+    });
+    $(function() {
+        $('a#delete-result').on('click', function(e) {
+          e.preventDefault();
+          var parent = e.target.parentElement.parentElement;
+          var barcode = null;
+          for (var i = 0; i < parent.childNodes.length; i++) {
+            if (parent.childNodes[i].className == "text_wrapper") {
+                barcode = parent.childNodes[i].textContent;
+              break;
+            }        
+        }
+          console.log(barcode);
+          $.getJSON('/delete_img', {'barcode': barcode, 'filename': '1'},
+          function(data) {
+              $('#viewer-modal').modal('hide');
+              setInterval('location.reload()', 1000);
+          });
+          return false;
+        });
+      });
+</script>
+
+<div class="modal fade" id="viewer-modal" tabindex="-1" aria-labelledby="modal-title" aria-hidden="true">    
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="text_wrapper" id="viewer-title">Modal title</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>        
+            <div class="modal-body">
+                <div class="container">
+                    <div class="row mx-auto">
+                        <div class="col-md-8">
+                            <canvas id="viewer-canvas" style="width: 100%;" width="800" height="600"></canvas>
+                        </div>
+                        <div class="col-6 col-md-4 flex-grow-1">
+                            <div class="row">
+                                <h4 class="mb-0" id="viewer-barcode">barcode</h4>
+                            </div>
+                            <div class="row mb-1 ">
+                                <div class="col-sm-5">
+                                    <p class="text_wrapper" id="viewer-date" style="color: {{accent_gray}}">Дата: </p>
+                                    <p class="text_wrapper" id="viewer-scanner" style="color: {{accent_gray}}">Сканер: </p>
+                                    <p class="text_wrapper" id="viewer-user" style="color: {{accent_gray}}">Пользователь: </p>
+                                    <button type="button" class="btn btn-primary" id="viewer-show" data-toggle="button" aria-pressed="false" autocomplete="off">
+                                        Отобразить
+                                    </button>
+                                </div>
+                                <div class="col-sm-6">
+                                    <p class="text_wrapper" id="viewer-date-field"></p>
+                                    <p class="text_wrapper" id="viewer-scanner-field"></p>
+                                    <p class="text_wrapper" id="viewer-user-field"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>                
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" id="viewer-send">Отправить</button>
+                <a id='delete-img'><button class="btn btn-primary" id="viewer-delete">Удалить</button></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="scanning-modal" tabindex="-1" aria-labelledby="modal-title" aria-hidden="true">    
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="text_wrapper" id="scanning-title">Scanning</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>        
+            <div class="modal-body">
+                <form>
+                    <div class="form-group row">
+                      <label for="staticEmail" class="col-sm-2 col-form-label">Штрих-код</label>
+                      <div class="col-sm-10">
+                        <input type="text" class="form-control" id="staticEmail" value="email@example.com">
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label for="inputPassword" class="col-sm-2 col-form-label">Password</label>
+                      <div class="col-sm-10">
+                        <input type="password" class="form-control" id="inputPassword" placeholder="Password">
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-form-label col-sm-3">
+                            <p class="row text_wrapper" id="viewer-date" style="color: {{accent_gray}}">X: </p>
+                            <p class="row text_wrapper" id="viewer-scanner" style="color: {{accent_gray}}">Y: </p>
+                            <p class="row text_wrapper" id="viewer-user" style="color: {{accent_gray}}">Z: </p>
+                        </div>
+                        <div class="col-form-label col-sm-3">
+                            <p class="row text_wrapper" id="viewer-date" style="color: {{accent_gray}}">1: </p>
+                            <p class="row text_wrapper" id="viewer-scanner" style="color: {{accent_gray}}">2: </p>
+                            <p class="row text_wrapper" id="viewer-user" style="color: {{accent_gray}}">3: </p>
+                        </div>
+                        <div class="col-form-label col-sm-3">
+                            <button class="row btn btn-primary" type="button">Вверх</button>
+                            <button class="row btn btn-primary" type="button">Вниз</button>
+                        </div>
+                        <div class="col-form-label col-sm-3">
+                            <button class="row btn btn-primary" type="button">Вверх</button>
+                            <button class="row btn btn-primary" type="button">Вниз</button>
+                        </div>
+                        <div class="col-form-label col-sm-3">
+                            <img src="{{static}}/img/scan_example.jpg" style="width: 100px; height: 100px;"></img>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <img class="col" src="{{static}}/img/scan_example.jpg"></img>
+                        <div class="col form-group">
+                            <label for="exampleFormControlTextarea1">Текущие координаты</label>
+                            <textarea class="form-control" id="exampleFormControlTextarea1" rows="10" readonly></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" id="modal-send">Отправить</button>
+                <a id='delete-img'><button class="btn btn-primary" id="modal-delete">Удалить</button></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col border border-2 min-vh-100 max-vh-100 d-flex flex-column">
+    <div class="row border-bottom border-between row-cols-auto flex-row flex-nowrap scrollable overflow-auto" style="background: {{accent_lightgray}}; margin: 0px; overflow-x: hidden;">
+        <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist" style="margin-bottom: 5px !important;">
+            {% for idx in range(results|length) %}
+                <li class="border-end nav-link tab-item {% if idx == 0 %} active {% endif %}" id="result-{{idx}}-tab" data-bs-toggle="pill" data-bs-target="#result-{{idx}}" type="button" role="tab" aria-controls="scanner-{{idx}}" aria-selected="true" style="text-decoration: none; padding: 5px;">
+                    <div class="card">
+                        <div class="card-body border-bottom" style="padding-bottom: 2px; padding-top: 2px;">
+                            <p class="card-text text_wrapper" style="max-width: 65px;">{{results[idx]["name"]}}</p>
+                        </div>
+                        <!--<img class="card-img-top mx-auto" src="{{static}}/img/microscope.png" style="padding: 5px; max-width: 80px; height: auto;"> -->
+                        <canvas class="card-img-top mx-auto scanner-canvas" id="scanner-canvas-{{idx}}" style="width: 100%; padding: 5px; width: 80px; height: 80px;"></canvas>
+                        <div class="row card-body border-top" style="padding: 0px; margin: 0px;">
+                            <i class="col-3 scanning-status center fa-solid fa-circle border-between" id="scnning-status-{{results[idx]["id"]}}"></i>
+                            <button class="col" style="width: 100%" id="start-scanning-{{results[idx]["id"]}}">Старт</button>
+                        </div>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="row flex-grow-1">
+        <div class="tab-content" id="results-tabContent">
+            {% for idx in range(results|length) %}
+                <div class="tab-pane fade show {% if idx == 0 %} active {% endif %}" id="result-{{idx}}" role="tabpanel" aria-labelledby="result-{{idx}}-tab">
+                    <div class="row min-vh-100">
+                        <div class="col-sm-4 border-end">
+                            <ul class="tree" style="padding: 10px;" role="tablist" aria-orientation="vertical">
+                                {% for date, data in results[idx]["results"].items() %}
+                                    <li>
+                                        <details open>
+                                            <summary class="text_wrapper" style="font-size: 17px;">{{date}}</summary>
+                                            <ul>
+                                                {% for barcode in data.keys() %}
+                                                <li data-value="{{barcode}}"  id="result-{{barcode}}-tab" data-bs-toggle="pill" data-bs-target="#result-{{barcode}}" type="button" role="tab" aria-controls="result-{{barcode}}" aria-selected="true">
+                                                    <i class="fa-solid fa-square" style="padding: 0px; color: {% if data[barcode]["enterobiasis"] == 1 %}red{% else %}green{% endif %}; "></i>
+                                                    <a class="text_wrapper" style="width: 100%; font-size: 16px;">{{barcode}}</a>
+                                                </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </details>
+                                    </li>
+                                {% endfor %}
+                              </ul>
+                        </div>
+                        <div class="col-sm-8 tab-content" style="padding-right: 0px; max-height: 1000px;" id="results-tabContent-2">
+                            {% for date, item in results[idx]["results"].items() %}
+                                {% for barcode, data in item.items() %}
+                                    <div class="tab-pane fade show" id="result-{{barcode}}" role="tabpanel" aria-labelledby="result-{{barcode}}-tab">
+                                        <div class="container-fluid h-100 scrollable overflow-auto" style="overflow-y: hidden;">
+                                            <div class="row text-center" style="padding: 4px;">
+                                            {% for result in data["info"] %}
+                                                <div class="col-md-3" style="padding-bottom: 24px;" id="result-{{barcode}}-{{result['image'].split('/')[-1]}}">
+                                                    <div class="card" alt="{{barcode}}">
+                                                        <img class="card-img-top result-item" src="{{result['thumbnail']}}" alt="{{result}}">
+                                                        <div class="card-body result-item">
+                                                            <p class="card-text text_wrapper">{{result['image'].split('/')[-1]}}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

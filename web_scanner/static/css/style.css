@@ -1,0 +1,105 @@
+@font-face {
+    font-family: "Montserrat regular";
+    src: url("/static/css/fonts/Montserrat-Regular.eot");
+    src: url("/static/css/fonts/Montserrat-Regular.woff") format("woff"),
+    url("/static/css/fonts/Montserrat-Regular.otf") format("opentype"),
+    url("/static/css/fonts/Montserrat-Regular.svg") format("svg");
+}
+
+@font-face {
+    font-family: "Montserrat bold";
+    src: url("/static/css/fonts/Montserrat-Bold.eot");
+    src: url("/static/css/fonts/Montserrat-Bold.woff") format("woff"),
+    url("/static/css/fonts/Montserrat-Bold.otf") format("opentype"),
+    url("/static/css/fonts/Montserrat-Bold.svg") format("svg");
+}
+
+.text_wrapper {
+    text-decoration: none;
+    font-family: "Montserrat regular", sans-serif;
+    font-size: 16px;
+}
+
+.text_wrapper_bold {
+    text-decoration: none;
+    font-family: "Montserrat bold", sans-serif;
+    font-size: 20px;
+}
+
+.scanning-status {
+    padding: 0px; 
+    text-align: center; 
+    vertical-align: middle; 
+    width: 25px; 
+    height: 25px;
+    line-height: 30px;
+}
+
+.dot {
+    height: 15px;
+    width: 15px;
+    background-color: #bbb;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+.nav_wrapper {
+    text-decoration: none;
+    font-size: 19px;
+    color: white;
+    margin-right: 20px;
+}
+
+.nav_wrapper:hover{
+    color: white !important;
+}
+
+.nav_wrapper.active {
+    color: white !important;
+    text-decoration: none;
+    font-size: 19px;
+}
+
+.logo_wrapper {
+    width: 185px; 
+    height: auto;
+    margin: 34px;
+}
+
+.tab-item {
+    color: black;
+}
+
+.tab-item.active {
+    background-color: white !important;
+}
+
+.tab-item.active > .card {
+    background-color: #006a83 !important;
+}
+
+.param-block {
+    margin: 0px;
+    padding: 5px;
+    height: 100%;
+    width: 100%;
+}
+
+.param-title {
+    padding: 10px !important;
+}
+
+.param-line {
+    margin: 0px;
+    padding: 0px;
+    margin-bottom: 7px;
+}
+
+.param-button {
+    margin-bottom: 10px;
+    background-color: #9d9d9d;
+}
+
+.param-checkbox {
+    margin-left: 12px;
+}

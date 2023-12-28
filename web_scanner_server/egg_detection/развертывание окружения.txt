@@ -1,0 +1,15 @@
+conda create -n sahi_fiftyone_p37_env python=3.7
+conda activate sahi_fiftyone_p37_env
+pip install sahi
+pip install torch==1.9.0+cu111 torchvision==0.10.0+cu111 -f https://download.pytorch.org/whl/torch_stable.html
+pip install mmcv-full==1.6.0 -f https://download.openmmlab.com/mmcv/dist/cu111/torch1.9.0/index.html
+pip install mmdet==2.25.1
+pip install fiftyone==0.14.2
+
+
+
+
+#run_detection
+conda activate sahi_fiftyone_p37_env
+python main.py
+

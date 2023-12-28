@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="col border border-2 min-vh-100 max-vh-100 d-flex flex-column">
+    <div class="row flex-grow-1">
+        <div class="row min-vh-100">
+            <div class="col-sm-4 border-end d-flex flex-column">
+                <ul role="tablist" aria-orientation="vertical">
+                    {% for cur_version in versions %}
+                        <li class="li-nav" data-value="{{cur_version["id"]}}" style="padding: 10px;" id="version-{{cur_version["id"]}}-tab" data-bs-toggle="pill" data-bs-target="#version-{{cur_version["id"]}}" type="button" role="tab" aria-controls="version-{{cur_version["id"]}}" aria-selected="true">
+                            <a class="text_wrapper" style="color: black; width: 100%;">{{cur_version["name"]}}</a>
+                        </li>
+                    {% endfor %}
+                    <li class="li-nav" data-value="00"  id="version-00-tab" data-bs-toggle="pill" data-bs-target="#version-00" type="button" role="tab" aria-controls="version-00" aria-selected="true">
+                        <a class="btn btn-link text_wrapper">
+                            <i class="fa-solid fa-plus" style="margin-right: 10px; margin-bottom: 15px;"></i>Добавить версию
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-sm-8 tab-content" style="padding: 10px;" id="versions-tabContent">
+                {% for idx in range(versions|length + 1)%}
+                    {% if idx == versions|length %}
+                        {% set cur_version = {"id": "00", "settings": {}} %} 
+                    {% else %}
+                        {% set cur_version = versions[idx] %} 
+                    {% endif %}
+                    <div class="tab-pane fade show" id="version-{{cur_version["id"]}}" role="tabpanel" aria-labelledby="version-{{cur_version["id"]}}-tab">
+                        <div class="card-body media align-items-center">
+                            <div class="form-group">
+                                <label class="form-label text_wrapper">Версия</label>
+                                <input type="text" class="form-control mb-1 text_wrapper" value="{{cur_version["name"]}}" id="version-{{cur_version["id"]}}-login">
+                            </div>
+                            {% set blocks_cnt = cur_version["settings"].keys()|length %}
+                            {% for kblock, vblock in cur_version["settings"].items() %}
+                                <input class="form-control text_wrapper_bold" style="border: 0; box-shadow: none;" value="{{ vblock["title"] }}">
+                                <div class="" style="margin-bottom: 25px;">
+                                    {% set block_loop = loop %}
+                                    {% for param in vblock["params"] %}
+                                        {% if param["type"] == "float" %}
+                                            <div class="form-group row param-line">
+                                                <input class="col form-control text_wrapper" style="margin-left: 12px;" for="ver-{{cur_version["name"]}}-param-{{block_loop.index * blocks_cnt + loop.index}}" value="{{param["name"]}}">
+                                                <input class="col form-control text_wrapper" type="number" id="ver-{{cur_version["name"]}}-param-{{block_loop.index * blocks_cnt + loop.index}}" placeholder="0.01" value="{{param["value"]}}">
+                                            </div>
+                                        {% elif param["type"] == "bool" %}
+                                            <div class="form-check param-checkbox">
+                                                <input class="form-check-label text_wrapper" for="ver-{{cur_version["name"]}}-param-{{block_loop.index * blocks_cnt + loop.index}}" value="{{param["name"]}}">
+                                                <input class="form-check-input" type="checkbox" id="ver-{{cur_version["name"]}}-param-{{block_loop.index * blocks_cnt + loop.index}}">
+                                            </div>
+                                        {% elif param["type"] == "string" %}
+                                            <div class="form-group row param-line">
+                                                <input class="col-sm-6 col-form-label text_wrapper" style="margin-left: 12px;" for="ver-{{cur_version["name"]}}-param-{{block_loop.index * blocks_cnt + loop.index}}" value="{{param["name"]}}">
+                                                <input class="col form-control text_wrapper" id="ver-{{cur_version["name"]}}-param-{{block_loop.index * blocks_cnt + loop.index}}" value="{{param["value"]}}">
+                                            </div>
+                                        {% elif param["type"] == "button" %}
+                                            <button type="button" class="btn btn-secondary text_wrapper param-button" style="margin: 12px;">{{param["name"]}}</button>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="text-end mt-3">
+                            <button type="button" class="btn btn-primary text_wrapper" id="save-version-{{cur_version["name"]}}">Сохранить</button>
+                            <button type="button" class="btn btn-default text_wrapper" id="cancel-version-{{cur_version["name"]}}">Отменить</button>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

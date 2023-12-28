@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% set static = "../../static"%}
+    {% set main_red = "#c02524" %}
+    {% set main_blue = "#006a83" %}
+    {% set accent_gray = "#9d9d9d" %}
+    {% set accent_lightgray = "#ededed" %}
+    <meta charset="utf-8">
+    <title>Вход</title>
+    <link href="{{static}}/vendor/bootstrap-5.2.1/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{static}}/css/style.css">
+
+    <link rel="icon" type="image/png" href="{{static}}/img/favicon.svg" sizes="32x32">
+    <link rel="icon" type="image/png" href="{{static}}/img/favicon.svg" sizes="16x16">
+</head>
+<body>
+    <section class="h-100">
+        <div class="container h-100">
+            <div class="row justify-content-sm-center h-100">
+                <div class="col-xxl-4 col-xl-5 col-lg-5 col-md-7 col-sm-9">
+                    <div class="text-center my-5">
+                        <img class="logo_wrapper" src="{{static}}/img/logo.svg">
+                    </div>
+                    <div class="card shadow-lg">
+                        <div class="card-body p-5">
+                            <h1 class="fs-4 card-title fw-bold mb-4 text_wrapper">Вход</h1>
+                            <form method="POST" class="needs-validation" novalidate="" autocomplete="off">
+                                {% if error %}
+                                <div class="alert alert-danger" role="alert">
+                                    Ошибка {{error}}: {{message}}
+                                  </div>
+                                {% endif %}
+                                <div class="mb-3">
+                                    <label class="mb-2 text-muted text_wrapper" for="username">Логин</label>
+                                    <input id="username" type="text" class="form-control text_wrapper" name="username" value="" required autofocus>
+                                </div>
+
+                                <div class="mb-3">
+                                    <div class="mb-2 w-100">
+                                        <label class="text-muted text_wrapper" for="password">Пароль</label>
+                                    </div>
+                                    <input id="password" type="password" class="form-control text_wrapper" name="password" required>
+                                </div>
+
+                                <div class="d-flex align-items-center">
+                                    <div class="form-check">
+                                        <input type="checkbox" name="remember" id="remember" class="form-check-input">
+                                        <label for="remember" class="form-check-label text_wrapper">Запомнить меня</label>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary ms-auto text_wrapper">
+                                        Продолжить
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="text-center mt-5 text-muted text_wrapper">
+                        Copyright &copy; 2022 &mdash; ГБУЗ "ДЦЛИ ДЗМ"
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

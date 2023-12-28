@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="col flex-grow-1 border border-2 min-vh-100 max-vh-100">
+    <div class="row border-bottom border-between row-cols-auto flex-row flex-nowrap scrollable overflow-auto" style="background: {{accent_lightgray}}; margin: 0px; overflow-x: hidden;">
+        <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist" style="margin-bottom: 5px !important;">
+            {% for idx in range(scanners|length) %}
+                <li class="border-end nav-link tab-item {% if idx == 0 %} active {% endif %}" id="scanner-{{idx}}-tab" style="text-decoration: none; padding: 5px; height: 150px;" data-bs-toggle="pill" data-bs-target="#scanner-{{idx}}" type="button" role="tab" aria-controls="scanner-{{idx}}" aria-selected="true">
+                    <div class="card" style="height: 145px;">
+                        <img class="card-img-top mx-auto" src="{{static}}/img/microscope.png" style="padding: 5px; max-width: 80px; height: auto;">
+                        <div class="card-body" style="padding-bottom: 2px; padding-top: 2px; display:flex; align-items:center;">
+                            <p class="card-text text_wrapper text-center align-middle" style="{% if idx == cur_scanner %} color: {{main_red}}; {% endif %} font-size: 15px; max-width: 65px;">{{scanners[idx]["name"]}}</p>
+                        </div>
+                    </div>
+                </li>
+            {% endfor %}
+            <li class="border-end" id="result-add-tab" style="text-decoration: none; padding: 5px; height: 150px;" id="scanner-newscanner-tab" data-bs-toggle="pill" data-bs-target="#scanner-newscanner" type="button" role="tab" aria-controls="scanner-newscanner" aria-selected="true">
+                <div class="card" style="background: green; height: 145px;">
+                    <img class="card-img-top mx-auto" src="{{static}}/img/microscope.png" style="padding: 5px; max-width: 80px; height: auto;"> 
+                    <div class="card-body" style="padding-bottom: 2px; padding-top: 2px; display:flex; align-items:center;">
+                        <p class="card-text text_wrapper text-center align-middle" style="max-width: 70px; color: white; font-size: 14px;">Добавить</p>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <div class="row">
+        <div class="tab-content" id="scanners-tabContent">
+            {% for idx in range(scanners|length + 1) %}
+                {% if idx == scanners|length %}
+                    {% set scanner = {"settings": {"params": {}}, "name": "", "version": "0.0.1", "info": {"decoration": "", "connection": {}}} %}
+                    {% set idx = "newscanner" %}
+                {% else %}
+                    {% set scanner = scanners[idx] %}
+                {% endif %}
+                <div class="tab-pane fade show {% if idx == 0 %} active {% endif %}" id="scanner-{{idx}}" role="tabpanel" aria-labelledby="scanner-{{idx}}-tab">
+                    {% set cnt_row_elems = 2%}
+                    {% for col_idx in range((versions[scanner["version"]]["settings"].values()|length // cnt_row_elems) + 1)%}
+                        <div class="row equal" style="margin-bottom: 24px;">
+                            {% if loop.index == 1 %}
+                                <div class="col-sm-6"> 
+                                    <div class="row border border-2 param-block" style="margin: 0px;">
+                                        <h4 class="text-center border-bottom text_wrapper_bold param-title">Общие сведения</h4>
+                                        <div class="col border-end">
+                                            <form>
+                                                <div class="form-group row param-line">
+                                                    <label class="col-sm-6 col-form-label text_wrapper" for="scnr-{{idx}}-general-0">Название</label>
+                                                    <div class="col">
+                                                        <input class="form-control text_wrapper" type="text" id="scnr-{{idx}}-param-general-0" value="{{scanner["name"]}}">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row param-line">
+                                                    <label class="col-sm-6 col-form-label text_wrapper" for="scnr-{{idx}}-general-1">Версия</label>
+                                                    <div class="col">
+                                                        <select class="form-select text_wrapper" id="scnr-{{idx}}-param-general-1">
+                                                            {% for version in versions.keys() %}
+                                                                <option {% if scanner["version"] == version %} selected {% endif %}>{{version}}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row param-line">
+                                                    <label class="col-sm-6 col-form-label text_wrapper" for="scnr-{{idx}}-general-2">Описание</label>
+                                                    <div class="col">
+                                                        <input class="form-control text_wrapper" type="text" id="scnr-{{idx}}-param-general-2" value="{{scanner["info"]["description"]}}">
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                        <div class="col">
+                                            <form>
+                                                {% for key, value in scanner["info"]["connection"].items() %}
+                                                    <div class="form-group row param-line">
+                                                        <label class="col-sm-6 col-form-label text_wrapper" for="scnr-{{idx}}-con-{{loop.index}}">{{key}}</label>
+                                                        <div class="col">
+                                                            <input class="form-control text_wrapper" type="text" id="scnr-{{idx}}-con-{{loop.index}}" value="{{value}}">
+                                                        </div>
+                                                    </div>
+                                                {% endfor%}
+                                            </form>
+                                        </div>
+                                        <button type="button" class="btn btn-secondary text_wrapper param-button" style="margin-top: 15px;">Сохранить</button>
+                                    </div>
+                                </div>
+                            {% endif %}
+                            {% for param_idx in range(cnt_row_elems) %}
+                                {% if col_idx * cnt_row_elems + param_idx < versions[scanner["version"]]["settings"].values()|length %}
+                                    {% set param = (versions[scanner["version"]]["settings"].values() | list)[col_idx * cnt_row_elems + param_idx] %}
+                                    <div class="col"> 
+                                        <div class="row border border-2 param-block">
+                                            <h4 class="text-center border-bottom text_wrapper_bold param-title">{{ param["title"] }}</h4>
+                                            <form>
+                                                {% for i in param["params"] %}
+                                                    {% if i["type"] == "float" %}
+                                                        <div class="form-group row param-line">
+                                                            <label class="col-sm-6 col-form-label text_wrapper" for="scnr-{{idx}}-param-{{col_idx * cnt_row_elems + param_idx}}">{{i["name"]}}</label>
+                                                            <div class="col">
+                                                                <input class="form-control text_wrapper" type="number" id="scnr-{{idx}}-param-{{col_idx * cnt_row_elems + param_idx}}" placeholder="0.01" value="{{scanner["settings"]["params"][i["id"]]}}">
+                                                            </div>
+                                                        </div>
+                                                    {% elif i["type"] == "bool" %}
+                                                        <div class="form-check param-checkbox">
+                                                            <label class="form-check-label text_wrapper" for="scnr-{{idx}}-param-{{col_idx * cnt_row_elems + param_idx}}">
+                                                                {{i["name"]}}
+                                                            </label>
+                                                            <input class="form-check-input text_wrapper" type="checkbox" id="scnr-{{idx}}-param-{{col_idx * cnt_row_elems + param_idx}}">
+                                                        </div>
+                                                    {% elif i["type"] == "string" %}
+                                                        <div class="form-group row param-line">
+                                                            <label class="col-sm-6 col-form-label text_wrapper" for="scnr-{{idx}}-param-{{col_idx * cnt_row_elems + param_idx}}">{{i["name"]}}</label>
+                                                            <div class="col">
+                                                                <input class="form-control text_wrapper" id="scnr-{{idx}}-param-{{col_idx * cnt_row_elems + param_idx}}" value="{{scanner["settings"]["params"][i["id"]]}}">
+                                                            </div>
+                                                        </div>
+                                                    {% elif i["type"] == "button" %}
+                                                        <button type="button" class="btn btn-secondary text_wrapper param-button">{{i["name"]}}</button>
+                                                    {% endif %}
+                                                {% endfor%}
+                                            </form>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

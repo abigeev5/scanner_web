@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="col border min-vh-100 h-100 scrollable overflow-auto" style="overflow-y: hidden;">
+    {% for log in logs %}
+    <div class="alert alert-secondary" role="alert">
+      <p class="text_wrapper" style="margin: 0px;">
+        {% if log["type"] == "error" %}
+        <span class="badge bg-danger">Ошибка</span> 
+        {% elif log["type"] == "info" %}
+        <span class="badge bg-primary">Инфо</span> 
+        {% elif log["type"] == "warning" %}
+        <span class="badge bg-warning text-dark">Предупреждение</span> 
+        {% elif log["type"] == "success" %}
+        <span class="badge bg-success">Успех</span> 
+        {% endif %}
+        [{{log["name"]}}] [{{log["time"]}}]: {{log["message"]}}
+      </p>
+      </div>
+    {% endfor %}
+</div>
+{% endblock %}

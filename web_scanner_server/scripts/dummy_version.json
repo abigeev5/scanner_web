@@ -1,0 +1,112 @@
+{
+    "general":  {
+        "title": "Основное",
+        "params": [
+            {
+                "id": "0001",
+                "name": "param145645",
+                "value": 0.05,
+                "type": "float"
+            },
+            {
+                "id": "0002",
+                "name": "param2",
+                "value": 0.02,
+                "type": "float"
+            },
+            {
+                "id": "0003",
+                "name": "param3",
+                "value": 3,
+                "type": "float"
+            },
+            {
+                "id": "0004",
+                "name": "Сохранить",
+                "value": 1,
+                "type": "button"
+            }
+        ]
+    },
+    "calibration": {
+        "title": "Калибровка",
+        "params": [
+            {
+                "id": "0005",
+                "name": "param1",
+                "value": 0.05,
+                "type": "float"
+            },
+            {
+                "id": "0006",
+                "name": "param2",
+                "value": 1,
+                "type": "bool"
+            },
+            {
+                "id": "0007",
+                "name": "Калибрровать",
+                "value": 1,
+                "type": "button"
+            }
+        ]
+    },
+    "debug": {
+        "title": "Отладка",
+        "params": [
+            {
+                "id": "0008",
+                "name": "param1",
+                "value": 0,
+                "type": "bool"
+            },
+            {
+                "id": "0009",
+                "name": "Отладка",
+                "value": 1,
+                "type": "button"
+            }
+        ]
+    },
+    "scanning": {
+        "title": "Сканирование",
+        "params": [
+            {
+                "id": "0010",
+                "name": "param1",
+                "value": 0.05,
+                "type": "float"
+            },
+            {
+                "id": "0011",
+                "name": "param2",
+                "value": 0.25,
+                "type": "float"
+            },
+            {
+                "id": "0012",
+                "name": "param3",
+                "value": 0.35,
+                "type": "float"
+            },
+            {
+                "id": "0013",
+                "name": "param4",
+                "value": 0.01,
+                "type": "float"
+            },
+            {
+                "id": "0014",
+                "name": "Сканирование",
+                "value": 1,
+                "type": "button"
+            },
+            {
+                "id": "0015",
+                "name": "Сканирование 2",
+                "value": 1,
+                "type": "button"
+            }
+        ]
+    }
+}
